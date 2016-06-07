@@ -4,7 +4,9 @@ import groovy.util.FileNameFinder
 
 
 def appContext = setupContext(args)
-def includePaths = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8").include_paths?.join(" ")
+def parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
+
+def includePaths = parsedConfig.include_paths?.join(" ")
 def codeFolder = new File(appContext.codeFolder)
 
 def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
@@ -12,7 +14,7 @@ def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, in
 def i = filesToAnalyse.iterator()
 while(i.hasNext()) {
     string = i.next()
-    if( !string.endsWith(".cls") && !string.endsWith(".trigger") ) {
+    if( !string.endsWith(".java") ) {
         i.remove()
     }
 }
@@ -23,17 +25,14 @@ if (filesToAnalyse.isEmpty()) {
     System.exit(0)
 }
 
-def ruleset
-def defaultRulesetLocation = "/usr/src/app/apex-ruleset.xml"
-def customRulesetLocation = "/code/apex-ruleset.xml"
-if ( new File(customRulesetLocation).exists() ) {
-    ruleset = customRulesetLocation
-} 
-else {
-    ruleset = defaultRulesetLocation
+def ruleSetPath
+if ( new File(parsedConfig.config).exists() ) {
+  ruleSetPath = parsedConfig.config
+} else {
+  ruleSetPath = "/usr/src/app/ruleset.xml"
 }
 
-def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -d ${filesToAnalyse} -f codeclimate -R ${ruleset} -l apex -v 35 -failOnViolation false"
+def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -d ${filesToAnalyse} -f codeclimate -R ${ruleSetPath} -v 35 -failOnViolation false"
 
 ProcessBuilder builder = new ProcessBuilder( pmdCommand.split(' ') )
 
@@ -53,7 +52,6 @@ if ( process.exitValue() != 0 ) {
 }
 
 System.exit(0)
-
 
 def setupContext(cmdArgs) {
     def cli = new CliBuilder(usage:"${this.class.name}")
