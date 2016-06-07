@@ -26,7 +26,7 @@ if (filesToAnalyse.isEmpty()) {
 }
 
 def ruleSetPath
-if ( new File(parsedConfig.config).exists() ) {
+if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
   ruleSetPath = parsedConfig.config
 } else {
   ruleSetPath = "/usr/src/app/ruleset.xml"
