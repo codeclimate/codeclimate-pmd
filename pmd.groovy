@@ -2,7 +2,6 @@
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
-
 def appContext = setupContext(args)
 def parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
 
@@ -10,6 +9,10 @@ def includePaths = parsedConfig.include_paths?.join(" ")
 def codeFolder = new File(appContext.codeFolder)
 
 def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
+
+File analysisFilesTmp = new File("/tmp/files")
+analysisFilesTmp.createNewFile()
+analysisFilesTmp.deleteOnExit()
 
 def i = filesToAnalyse.iterator()
 while(i.hasNext()) {
@@ -25,6 +28,8 @@ if (filesToAnalyse.isEmpty()) {
     System.exit(0)
 }
 
+analysisFilesTmp << filesToAnalyse
+
 def ruleSetPath
 if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
   ruleSetPath = parsedConfig.config
@@ -32,7 +37,7 @@ if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
   ruleSetPath = "/usr/src/app/ruleset.xml"
 }
 
-def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -d ${filesToAnalyse} -f codeclimate -R ${ruleSetPath} -v 35 -failOnViolation false"
+def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist /tmp/files -f codeclimate -R ${ruleSetPath} -l java -v 35 -failOnViolation false"
 
 ProcessBuilder builder = new ProcessBuilder( pmdCommand.split(' ') )
 

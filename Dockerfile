@@ -1,11 +1,11 @@
 FROM java:8-jre
 
-MAINTAINER Up2Go-DavidRenz
+MAINTAINER Sivakumar Kailasam
 
 RUN cd /tmp && \
-     wget http://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.6.zip && \ 
-	 unzip apache-groovy-binary-2.4.6.zip && \ 
-	 mv groovy-2.4.6 /groovy  && \ 
+     wget http://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.6.zip && \
+	 unzip apache-groovy-binary-2.4.6.zip && \
+	 mv groovy-2.4.6 /groovy  && \
 	 rm apache-groovy-binary-2.4.6.zip
 
 ENV GROOVY_HOME /groovy
