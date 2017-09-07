@@ -1,10 +1,10 @@
 {
 	"name": "codeclimate-pmd",
 	"description": "Static code analysis tool for Java",
-	"maintainer": {
-		"name": "sivakumar-kailasam",
-		"email": "sivakumar.ur.friend@gmail.com "
-	},
+  "maintainer": {
+    "name": "Code Climate",
+    "email": "hello@codeclimate.com"
+  },
 	"languages": [
 		"Java"
 	],
