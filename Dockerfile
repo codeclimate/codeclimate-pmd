@@ -8,14 +8,15 @@ RUN apk update && \
     apk add ca-certificates wget curl jq && \
     update-ca-certificates
 
+RUN adduser -u 9000 -D app
+
 COPY ./bin /usr/src/app/bin
 RUN /usr/src/app/bin/install-pmd.sh
-
-RUN adduser -u 9000 -D app
 
 VOLUME /code
 WORKDIR /code
 COPY . /usr/src/app
+RUN chown -R app:app /usr/src/app
 
 USER app
 
