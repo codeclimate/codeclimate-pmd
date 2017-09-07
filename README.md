@@ -7,6 +7,13 @@
 1. If you haven't already, [install the Code Climate CLI](https://github.com/codeclimate/codeclimate).
 2. Run `codeclimate engines:enable pmd`. This command both installs the engine and enables it in your `.codeclimate.yml` file.
 3. You're ready to analyze! Browse into your project's folder and run `codeclimate analyze`.
+4. To add you custom PMD rules, open `.codeclimate.yml` and add a `config` entry pointing to your `ruleset.xml` file:
+```yml
+engines:
+  pmd:
+    enabled: true
+    config: ruleset.xml
+```
 
 ### Need help?
 
