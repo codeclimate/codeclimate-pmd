@@ -4,14 +4,10 @@ machine:
 
 dependencies:
   override:
-    - >
-      docker run
-      --env CIRCLE_BRANCH
-      --env CIRCLE_PROJECT_REPONAME
-      --env CIRCLE_TOKEN
-      --env GCR_JSON_KEY
-      --volume /var/run/docker.sock:/var/run/docker.sock
-      codeclimate/patrick pull || true
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL"
+    - docker pull "codeclimate/codeclimate-pmd:${CIRCLE_BRANCH//\//-}" || docker pull codeclimate/codeclimate-pmd || true
+    - git rev-parse HEAD > REVISION
+    - git rev-list --count HEAD > COMMIT_COUNT
     - make image
 
 test:
@@ -19,17 +15,19 @@ test:
     - make test
 
 deployment:
-  registry:
+  release:
+    branch: master
+    owner: codeclimate
+    commands:
+      - docker push codeclimate/codeclimate-pmd
+  staging:
     branch: /master|channel\/[\w-]+/
     owner: codeclimate
     commands:
-      - >
-        docker run
-        --env CIRCLE_BUILD_NUM
-        --env CIRCLE_PROJECT_REPONAME
-        --env GCR_JSON_KEY
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        codeclimate/patrick push gcr
+      - docker tag codeclimate/codeclimate-pmd codeclimate/codeclimate-pmd:${CIRCLE_BUILD_NUM}
+      - docker push codeclimate/codeclimate-pmd:${CIRCLE_BUILD_NUM}
+      - docker tag codeclimate/codeclimate-pmd codeclimate/codeclimate-pmd:${CIRCLE_BRANCH//\//-}
+      - docker push codeclimate/codeclimate-pmd:${CIRCLE_BRANCH//\//-}
 
 notify:
   webhooks:
