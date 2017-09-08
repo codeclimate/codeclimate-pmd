@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
@@ -37,7 +38,7 @@ if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
   ruleSetPath = "/usr/src/app/ruleset.xml"
 }
 
-def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist /tmp/files -f codeclimate -R ${ruleSetPath} -l java -v 35 -failOnViolation false"
+def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist /tmp/files -f codeclimate -R ${ruleSetPath} -failOnViolation false"
 
 ProcessBuilder builder = new ProcessBuilder( pmdCommand.split(' ') )
 
