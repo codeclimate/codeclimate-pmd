@@ -6,5 +6,4 @@ image:
 	docker build --rm -t $(IMAGE_NAME) .
 
 test: image
-	docker run --rm $(IMAGE_NAME) sh -c "echo Nothing to do yet!"
-
+	docker run --rm -v $(PWD):/code $(IMAGE_NAME) /code/test.groovy

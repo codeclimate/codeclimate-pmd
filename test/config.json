@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "channel": "beta",
+  "include_paths": [
+    "Main.java"
+  ]
+}
