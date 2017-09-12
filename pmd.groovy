@@ -20,10 +20,12 @@ class Config {
   }
 
   def ruleSet() {
-    def configFile = parsedConfig.config instanceof String ? parsedConfig.config : parsedConfig.config.file
+    if(parsedConfig.config) {
+      def configFile = parsedConfig.config instanceof String ? parsedConfig.config : parsedConfig.config.file
 
-    if(fileExists(configFile)) {
-      return configFile
+      if(fileExists(configFile)) {
+        return configFile
+      }
     }
 
     "/usr/src/app/ruleset.xml"

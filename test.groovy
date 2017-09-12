@@ -10,6 +10,9 @@ def execute(command) {
 
   proc.waitForProcessOutput(out, err)
 
+  System.err.println err
+  System.err.println out
+
   return [proc, out, err]
 }
 
@@ -22,7 +25,7 @@ def sanityCheck() {
 }
 
 def checkConfigBackwardCompatibility() {
-  def (proc, out, _err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.json")
+  def (proc, out, _err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.new.json")
   def (procOld, outOld, _errOld) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.old.json")
 
   assert proc.exitValue() == procOld.exitValue()
