@@ -25,6 +25,9 @@ class Config {
 
       if(fileExists(configFile)) {
         return configFile
+      } else {
+        System.err.println "Config file ${configFile} not found"
+        System.exit(1)
       }
     }
 

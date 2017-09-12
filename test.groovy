@@ -33,6 +33,13 @@ def checkConfigBackwardCompatibility() {
   assert proc.exitValue() == 0
 }
 
+def abortOnBadConfig() {
+  def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.bad.json")
+
+  assert !err.toString().isEmpty()
+  assert proc.exitValue() != 0
+}
+
 def engineCheckList() {
   def engine = new JsonSlurper().parse(new File("engine.json"), "UTF-8")
   assert engine.name
@@ -63,5 +70,7 @@ def dockerfileCheckList() {
 
 engineCheckList()
 dockerfileCheckList()
+
 sanityCheck()
 checkConfigBackwardCompatibility()
+abortOnBadConfig()
