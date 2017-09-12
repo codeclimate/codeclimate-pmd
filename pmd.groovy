@@ -3,65 +3,100 @@
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
-def appContext = setupContext(args)
-def parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
 
-def includePaths = parsedConfig.include_paths?.join(" ")
-def codeFolder = new File(appContext.codeFolder)
+class Config {
+  static final FILE_LIST = "/tmp/files"
+  def args
+  def appContext
+  def parsedConfig
+  def filesToAnalyze
 
-def filesToAnalyse = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
+  Config(args) {
+    this.args = args
+    this.appContext = setupContext()
+    this.parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
+    this.filesToAnalyze = filesToAnalyze()
+    saveFilesToAnalyze()
+  }
 
-File analysisFilesTmp = new File("/tmp/files")
-analysisFilesTmp.createNewFile()
-analysisFilesTmp.deleteOnExit()
+  def ruleSet() {
+    def configFile = parsedConfig.config instanceof String ? parsedConfig.config : parsedConfig.config.file
 
-def i = filesToAnalyse.iterator()
-while(i.hasNext()) {
-    string = i.next()
-    if( !string.endsWith(".java") ) {
-        i.remove()
+    if(fileExists(configFile)) {
+      return configFile
     }
+
+    "/usr/src/app/ruleset.xml"
+  }
+
+  def fileExists(file) {
+    new File(file).exists()
+  }
+
+  def noFiles() {
+    filesToAnalyze.isEmpty()
+  }
+
+  def saveFilesToAnalyze() {
+    File analysisFilesTmp = createTempFile()
+    analysisFilesTmp << filesToAnalyze
+  }
+
+  def filesToAnalyze() {
+    def includePaths = parsedConfig.include_paths?.join(" ")
+    def codeFolder = new File(appContext.codeFolder)
+
+    def files = new FileNameFinder().getFileNames(appContext.codeFolder, includePaths)
+
+    def i = files.iterator()
+    while(i.hasNext()) {
+      def name = i.next()
+      if(!name.endsWith(".java")) {
+        i.remove()
+      }
+    }
+
+    def fileNames = files.toString()
+    fileNames.substring(1, fileNames.length()-1).replaceAll("\\s+","")
+  }
+
+  def createTempFile() {
+    File tmp = new File(FILE_LIST)
+    tmp.createNewFile()
+    tmp.deleteOnExit()
+    tmp
+  }
+
+  def setupContext() {
+    def cli = new CliBuilder(usage:"${this.class.name}")
+    cli._(longOpt: "configFile", required: true, args: 1, "Path to config.json file")
+    cli._(longOpt: "codeFolder", required: true, args: 1, "Path to code folder")
+    cli.parse(args)
+  }
 }
 
-filesToAnalyse = filesToAnalyse.toString()
-filesToAnalyse = filesToAnalyse.substring(1, filesToAnalyse.length()-1).replaceAll("\\s+","")
-if (filesToAnalyse.isEmpty()) {
-    System.exit(0)
+/* ********** MAIN ********** */
+
+def config = new Config(args)
+if (config.noFiles()) {
+  System.exit(0)
 }
 
-analysisFilesTmp << filesToAnalyse
+def command = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${Config.FILE_LIST} -f codeclimate -R ${config.ruleSet()} -failOnViolation false"
 
-def ruleSetPath
-if ( parsedConfig.config && (new File(parsedConfig.config).exists()) ) {
-  ruleSetPath = parsedConfig.config
-} else {
-  ruleSetPath = "/usr/src/app/ruleset.xml"
-}
-
-def pmdCommand = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist /tmp/files -f codeclimate -R ${ruleSetPath} -failOnViolation false"
-
-ProcessBuilder builder = new ProcessBuilder( pmdCommand.split(' ') )
-
+ProcessBuilder builder = new ProcessBuilder(command.split(' '))
 Process process = builder.start()
 
-InputStream stdout = process.getInputStream ()
-BufferedReader reader = new BufferedReader (new InputStreamReader(stdout))
-
-while ((line = reader.readLine ()) != null) {
-   System.out.println ( line )
+InputStream stdout = process.getInputStream()
+BufferedReader reader = new BufferedReader(new InputStreamReader(stdout))
+while ((line = reader.readLine()) != null) {
+  System.out.println(line)
 }
 
 process.waitForProcessOutput()
 
-if ( process.exitValue() != 0 ) {
-    System.exit(-1)
+if (process.exitValue() != 0) {
+  System.exit(-1)
 }
 
 System.exit(0)
-
-def setupContext(cmdArgs) {
-    def cli = new CliBuilder(usage:"${this.class.name}")
-    cli._(longOpt: "configFile", required: true, args: 1, "Path to config.json file")
-    cli._(longOpt: "codeFolder", required: true, args: 1, "Path to code folder")
-    cli.parse(cmdArgs)
-}
