@@ -7,3 +7,9 @@ image:
 
 test: image
 	docker run --rm -v $(PWD):/code $(IMAGE_NAME) /code/test.groovy
+
+upgrade:
+	docker run --rm \
+		--workdir /usr/src/app \
+		--volume $(PWD):/usr/src/app \
+		$(IMAGE_NAME) ./bin/upgrade.sh

@@ -3,14 +3,12 @@ set -euo pipefail
 
 LIB_DIR=/usr/src/app/lib
 
-download_latest_pmd() {
-  curl -s https://api.github.com/repos/pmd/pmd/releases/latest | \
-    jq -c '.assets[] | select(.name | contains("bin")) | .browser_download_url' | \
-    xargs wget -O pmd.zip
+download_pmd() {
+  URL="https://github.com/pmd/pmd/releases/download/pmd_releases/5.8.1/pmd-bin-5.8.1.zip"
+  wget -O pmd.zip $URL
 }
 
 install_pmd() {
-  download_latest_pmd
   unzip pmd.zip
   mv ${LIB_DIR}/pmd-bin*/* ${LIB_DIR}/pmd
 }
@@ -23,5 +21,6 @@ cleanup() {
 mkdir -p ${LIB_DIR}/pmd
 cd ${LIB_DIR}
 
+download_pmd
 install_pmd
 cleanup
