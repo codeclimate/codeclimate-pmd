@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "channel": "beta",
+  "config": {
+    "file": "test/problematic_rules.xml",
+  },
+  "include_paths": [
+    "Main.java"
+  ]
+}
+
+
