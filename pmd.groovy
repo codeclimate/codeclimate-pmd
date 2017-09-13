@@ -107,7 +107,6 @@ while ((line = reader.readLine()) != null) {
     System.out.println(line)
   } else {
     System.err.println(line)
-    System.exit(-1)
   }
 }
 
