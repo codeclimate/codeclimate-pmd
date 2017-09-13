@@ -3,18 +3,41 @@
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
-def sanityCheck() {
-  def command = "/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.json"
-
+def execute(command) {
   def proc = command.execute()
   def out = new StringBuffer()
   def err = new StringBuffer()
 
   proc.waitForProcessOutput(out, err)
 
-  assert proc.exitValue() == 0
+  System.err.println err
+  System.err.println out
+
+  return [proc, out, err]
+}
+
+def sanityCheck() {
+  def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.json")
+
   assert !out.toString().isEmpty()
   assert err.toString().isEmpty()
+  assert proc.exitValue() == 0
+}
+
+def checkConfigBackwardCompatibility() {
+  def (proc, out, _err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.new.json")
+  def (procOld, outOld, _errOld) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.old.json")
+
+  assert proc.exitValue() == procOld.exitValue()
+  assert out.toString().equals(outOld.toString())
+  assert proc.exitValue() == 0
+}
+
+def abortOnBadConfig() {
+  def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.bad.json")
+
+  assert !err.toString().isEmpty()
+  assert proc.exitValue() != 0
 }
 
 def engineCheckList() {
@@ -45,6 +68,9 @@ def dockerfileCheckList() {
 
 /** MAIN **/
 
-sanityCheck()
 engineCheckList()
 dockerfileCheckList()
+
+sanityCheck()
+checkConfigBackwardCompatibility()
+abortOnBadConfig()
