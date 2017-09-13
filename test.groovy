@@ -41,10 +41,11 @@ def abortOnBadConfig() {
 }
 
 def handleBadOutput() {
+  // Redirect bad output (e.g. warnings) to stderr but keep processing
   def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/test --configFile=/code/test/config.problematic_rules.json")
 
   assert !err.toString().isEmpty()
-  assert proc.exitValue() != 0
+  assert proc.exitValue() == 0
 }
 
 def engineCheckList() {
