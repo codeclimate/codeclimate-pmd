@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "channel": "beta",
+  "config": "test/rules.xml",
+  "include_paths": [
+    "Main.java"
+  ]
+}
+

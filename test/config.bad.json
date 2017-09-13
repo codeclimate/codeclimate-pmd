@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "channel": "beta",
+  "config": {
+    "file": "test/invalid_file",
+  },
+  "include_paths": [
+    "Main.java"
+  ]
+}
+
+
