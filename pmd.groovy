@@ -5,18 +5,23 @@ import groovy.util.FileNameFinder
 
 
 class Config {
-  static final FILE_LIST = "/tmp/files"
   def args
   def appContext
   def parsedConfig
   def filesToAnalyze
+  def filesList
 
   Config(args) {
     this.args = args
     this.appContext = setupContext()
     this.parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
     this.filesToAnalyze = filesToAnalyze()
-    saveFilesToAnalyze()
+    this.filesList = createTempFile()
+    filesList << filesToAnalyze
+  }
+
+  def noFiles() {
+    filesToAnalyze.isEmpty()
   }
 
   def ruleSet() {
@@ -34,20 +39,15 @@ class Config {
     "/usr/src/app/ruleset.xml"
   }
 
-  def fileExists(file) {
+  def filesListPath() {
+    filesList.absolutePath
+  }
+
+  private def fileExists(file) {
     new File(file).exists()
   }
 
-  def noFiles() {
-    filesToAnalyze.isEmpty()
-  }
-
-  def saveFilesToAnalyze() {
-    File analysisFilesTmp = createTempFile()
-    analysisFilesTmp << filesToAnalyze
-  }
-
-  def filesToAnalyze() {
+  private def filesToAnalyze() {
     def includePaths = parsedConfig.include_paths?.join(" ")
     def codeFolder = new File(appContext.codeFolder)
 
@@ -65,14 +65,13 @@ class Config {
     fileNames.substring(1, fileNames.length()-1).replaceAll("\\s+","")
   }
 
-  def createTempFile() {
-    File tmp = new File(FILE_LIST)
-    tmp.createNewFile()
+  private def createTempFile() {
+    File tmp = File.createTempFile("files", ".txt")
     tmp.deleteOnExit()
     tmp
   }
 
-  def setupContext() {
+  private def setupContext() {
     def cli = new CliBuilder(usage:"${this.class.name}")
     cli._(longOpt: "configFile", required: true, args: 1, "Path to config.json file")
     cli._(longOpt: "codeFolder", required: true, args: 1, "Path to code folder")
@@ -87,7 +86,7 @@ if (config.noFiles()) {
   System.exit(0)
 }
 
-def command = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${Config.FILE_LIST} -f codeclimate -R ${config.ruleSet()} -failOnViolation false"
+def command = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false"
 
 ProcessBuilder builder = new ProcessBuilder(command.split(' '))
 Process process = builder.start()
