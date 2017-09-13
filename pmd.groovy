@@ -79,6 +79,15 @@ class Config {
   }
 }
 
+def isValid(json) {
+  try {
+    new JsonSlurper().parseText(json)
+    return true
+  } catch(Exception e) {
+    return false
+  }
+}
+
 /* ********** MAIN ********** */
 
 def config = new Config(args)
@@ -94,7 +103,12 @@ Process process = builder.start()
 InputStream stdout = process.getInputStream()
 BufferedReader reader = new BufferedReader(new InputStreamReader(stdout))
 while ((line = reader.readLine()) != null) {
-  System.out.println(line)
+  if(isValid(line)) {
+    System.out.println(line)
+  } else {
+    System.err.println(line)
+    System.exit(-1)
+  }
 }
 
 process.waitForProcessOutput()
