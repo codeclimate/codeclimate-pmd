@@ -3,7 +3,6 @@
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
-
 class Config {
   def args
   def appContext
@@ -79,13 +78,13 @@ class Config {
   }
 }
 
-def isValid(json) {
-  try {
-    new JsonSlurper().parseText(json)
-    return true
-  } catch(Exception e) {
-    return false
-  }
+def execute(command) {
+  ProcessBuilder builder = new ProcessBuilder(command.split(' '))
+  builder.environment().put("HEAPSIZE", "256m")
+  Process process = builder.start()
+  process.consumeProcessOutput(System.out, System.err)
+  process.waitFor()
+  System.exit(process.exitValue())
 }
 
 /* ********** MAIN ********** */
@@ -95,26 +94,4 @@ if (config.noFiles()) {
   System.exit(0)
 }
 
-def command = "/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false"
-
-ProcessBuilder builder = new ProcessBuilder(command.split(' '))
-Process process = builder.start()
-
-InputStream stdout = process.getInputStream()
-BufferedReader reader = new BufferedReader(new InputStreamReader(stdout))
-while ((line = reader.readLine()) != null) {
-  if(isValid(line)) {
-    System.out.println(line)
-  } else {
-    System.err.println(line)
-    System.exit(-1)
-  }
-}
-
-process.waitForProcessOutput()
-
-if (process.exitValue() != 0) {
-  System.exit(-1)
-}
-
-System.exit(0)
+execute("/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false")
