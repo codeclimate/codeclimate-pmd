@@ -80,6 +80,7 @@ class Config {
 
 def execute(command) {
   ProcessBuilder builder = new ProcessBuilder(command.split(' '))
+  builder.environment().put("HEAPSIZE", "256m")
   Process process = builder.start()
   process.consumeProcessOutput(System.out, System.err)
   process.waitFor()
