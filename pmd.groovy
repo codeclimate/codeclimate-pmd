@@ -80,7 +80,8 @@ class Config {
 
 def execute(command) {
   ProcessBuilder builder = new ProcessBuilder(command.split(' '))
-  builder.environment().put("HEAPSIZE", "256m")
+  def env = builder.environment()
+  env.put("JAVA_OPTS", "-XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=30")
   Process process = builder.start()
   process.consumeProcessOutput(System.out, System.err)
   process.waitFor()
