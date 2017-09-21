@@ -17,7 +17,7 @@ class SanityCheckTest {
 
   @Test
   void sanityCheck() {
-    def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/fixtures --configFile=/code/fixtures/config.json")
+    def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/usr/src/app/fixtures --configFile=/usr/src/app/fixtures/config.json")
 
     assert !out.toString().isEmpty()
     assert err.toString().isEmpty()
@@ -26,8 +26,8 @@ class SanityCheckTest {
 
   @Test
   void checkConfigBackwardCompatibility() {
-    def (proc, out, _err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/fixtures --configFile=/code/fixtures/config.new.json")
-    def (procOld, outOld, _errOld) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/fixtures --configFile=/code/fixtures/config.old.json")
+    def (proc, out, _err) = execute("/usr/src/app/pmd.groovy --codeFolder=/usr/src/app/fixtures --configFile=/usr/src/app/fixtures/config.new.json")
+    def (procOld, outOld, _errOld) = execute("/usr/src/app/pmd.groovy --codeFolder=/usr/src/app/fixtures --configFile=/usr/src/app/fixtures/config.old.json")
 
     assert proc.exitValue() == procOld.exitValue()
     assert out.toString().equals(outOld.toString())
@@ -36,7 +36,7 @@ class SanityCheckTest {
 
   @Test
   void abortOnBadConfig() {
-    def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/code/fixtures --configFile=/code/fixtures/config.bad.json")
+    def (proc, out, err) = execute("/usr/src/app/pmd.groovy --codeFolder=/usr/src/app/fixtures --configFile=/usr/src/app/fixtures/config.bad.json")
 
     assert !err.toString().isEmpty()
     assert proc.exitValue() != 0

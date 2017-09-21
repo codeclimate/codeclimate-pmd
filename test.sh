@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-set -e
+set -ex
 
 BUILD_DIR=build
 GROOVY="${GROOVY_HOME}/embeddable/groovy-all-${GROOVY_VERSION}.jar"
@@ -12,10 +12,11 @@ test_classes() {
 
 clean() {
   rm -rf $BUILD_DIR
+  mkdir $BUILD_DIR
 }
 
 build() {
-  groovyc test/**.groovy -d $BUILD_DIR
+  groovyc src/**.groovy test/**.groovy -d $BUILD_DIR
 }
 
 run() {
