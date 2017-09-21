@@ -16,7 +16,7 @@ clean() {
 }
 
 build() {
-  groovyc src/**.groovy test/**.groovy -d $BUILD_DIR
+  groovyc test/**.groovy -d $BUILD_DIR
 }
 
 run() {
