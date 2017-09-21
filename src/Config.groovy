@@ -34,6 +34,11 @@ class Config {
       }
     }
 
+    def prjRulesByConvention = new File(appContext.codeFolder, "ruleset.xml")
+    if(prjRulesByConvention.exists()) {
+      return prjRulesByConvention.absolutePath
+    }
+
     return DEFAULT_RULES
   }
 
