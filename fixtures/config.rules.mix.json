@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "channel": "beta",
+  "config": {
+    "file": "specified_rules.xml",
+    "rules": "java-basic,design"
+  },
+  "include_paths": [
+    "Main.java"
+  ]
+}

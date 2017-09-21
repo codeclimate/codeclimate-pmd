@@ -22,16 +22,15 @@ class Config {
   }
 
   def ruleSet() {
-    if(parsedConfig.config) {
-      def configFile = parsedConfig.config instanceof String ? parsedConfig.config : parsedConfig.config.file
+    def config = parsedConfig.config
 
-      def specifiedRules = new File(appContext.codeFolder, configFile)
-      if(specifiedRules.exists()) {
-        return specifiedRules.absolutePath
-      } else {
-        System.err.println "Config file ${configFile} not found"
-        System.exit(1)
-      }
+    switch(config) {
+      case String:
+        return specifiedRules(config)
+        break
+      case Map:
+        return rulesOrFile(config)
+        break
     }
 
     def defaultFile = new File(appContext.codeFolder, "ruleset.xml")
@@ -44,6 +43,30 @@ class Config {
 
   def filesListPath() {
     filesList.absolutePath
+  }
+
+  private def rulesOrFile(config) {
+    validate(config)
+    if(config.rules) {
+      return config.rules
+    }
+    return specifiedRules(config.file)
+  }
+
+  private def validate(config) {
+    if(config.file && config.rules) {
+      throw new IllegalArgumentException("Config should contain 'file' OR 'rules'")
+    }
+  }
+
+  private def specifiedRules(configFile) {
+    def rules = new File(appContext.codeFolder, configFile)
+    if(rules.exists()) {
+      return rules.absolutePath
+    } else {
+      System.err.println "Config file ${configFile} not found"
+      System.exit(1)
+    }
   }
 
   private def filesToAnalyze() {

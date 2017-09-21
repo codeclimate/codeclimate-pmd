@@ -19,4 +19,16 @@ class ConfigTest {
     def config = new Config([configFile: "/usr/src/app/fixtures/ruleset_default_file/config.json", codeFolder: "/usr/src/app/fixtures/ruleset_default_file"])
     assertEquals config.ruleSet(), "/usr/src/app/fixtures/ruleset_default_file/ruleset.xml"
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void doesNotAllowToMixRulesAndFile() {
+    def config = new Config([configFile: "/usr/src/app/fixtures/config.rules.mix.json", codeFolder: "/usr/src/app/fixtures"])
+    config.ruleSet()
+  }
+
+  @Test
+  public void acceptRulesSimpleNames() {
+    def config = new Config([configFile: "/usr/src/app/fixtures/config.rules.names.json", codeFolder: "/usr/src/app/fixtures"])
+    assertEquals config.ruleSet(), "java-basic,design"
+  }
 }
