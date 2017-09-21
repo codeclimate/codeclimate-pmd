@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "channel": "beta",
-  "config": "fixtures/rules.xml",
+  "config": "specified_rules.xml",
   "include_paths": [
     "Main.java"
   ]

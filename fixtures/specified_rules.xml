@@ -9,8 +9,8 @@ The Basic ruleset contains a collection of good practices which should be follow
   </description>
 
 	<rule name="JumbledIncrementer"
-    	  language="java"
-    	  since="1.0"
+	  language="java"
+	  since="1.0"
           message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#JumbledIncrementer">
@@ -144,9 +144,9 @@ public class Foo {
 			synchronized(this) {
 				if (baz == null) {
 					baz = new Object();
-        		}
-      		}
-    	}
+			}
+		}
+	}
 		return baz;
 	}
 }
@@ -386,7 +386,7 @@ BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer v
 
 
     <rule  name="MisplacedNullCheck"
-    	   language="java"
+	   language="java"
            since="3.5"
            message="The null check here is misplaced; if the variable is null there will be a NullPointerException"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -441,7 +441,7 @@ public class Foo {
 
 
     <rule  name="AvoidThreadGroup"
-    	   language="java"
+	   language="java"
            since="3.6"
            message="Avoid using java.lang.ThreadGroup; it is not thread safe"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -527,10 +527,10 @@ bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
             class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule"
             externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#AvoidUsingOctalValues">
     <description>
-    	<![CDATA[
+	<![CDATA[
 Integer literals should not start with zero since this denotes that the rest of literal will be
 interpreted as an octal value.
-    	]]>
+	]]>
     </description>
     <priority>3</priority>
     <example>
@@ -548,10 +548,10 @@ k = i * j;		// set k with 80 not 120
             class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
             externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#AvoidUsingHardCodedIP">
 	    <description>
-	    	<![CDATA[
+		<![CDATA[
 Application with hard-coded IP addresses can become impossible to deploy in some cases.
 Externalizing IP adresses is preferable.
-	    	]]>
+		]]>
 	    </description>
 	    <priority>3</priority>
 	     <properties>
@@ -567,7 +567,7 @@ public class Foo {
     </rule>
 
   <rule name="CheckResultSet"
-    	language="java"
+	language="java"
         since="4.1"
         class="net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
@@ -633,7 +633,7 @@ int j = -~7;
     </rule>
 
   <rule name="ExtendsObject"
-  		language="java"
+		language="java"
         since="5.0"
         message="No need to explicitly extend Object."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -659,10 +659,10 @@ public class Foo extends Object { 	// not required
 
 	<rule name="CheckSkipResult"
 	      language="java"
-	  	  since="5.0"
+		  since="5.0"
           message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
           class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
-	  	  externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#CheckSkipResult">
+		  externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#CheckSkipResult">
         <description>The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.</description>
         <priority>3</priority>
         <example>
@@ -688,7 +688,7 @@ public class Foo {
     </rule>
 
 	<rule name="AvoidBranchingStatementAsLastInLoop"
-	  	  since="5.0"
+		  since="5.0"
 		  class="net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule"
 		  message="Avoid using a branching statement as the last in a loop."
           externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop">
