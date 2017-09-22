@@ -6,7 +6,7 @@ image:
 	docker build --rm -t $(IMAGE_NAME) .
 
 test: image
-	docker run --rm -v $(PWD):/code $(IMAGE_NAME) /code/test.groovy
+	docker run --rm --workdir /usr/src/app $(IMAGE_NAME) ./test.sh
 
 upgrade:
 	docker run --rm \

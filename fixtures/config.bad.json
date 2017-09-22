@@ -2,10 +2,11 @@
   "enabled": true,
   "channel": "beta",
   "config": {
-    "file": "test/rules.xml",
+    "file": "invalid_file",
   },
   "include_paths": [
     "Main.java"
   ]
 }
+
 
