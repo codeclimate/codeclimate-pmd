@@ -1,0 +1,8 @@
+---
+engines:
+  pmd:
+    enabled: true
+ratings:
+  paths:
+  - "**.java"
+exclude_paths: []

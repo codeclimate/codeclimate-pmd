@@ -1,10 +1,9 @@
 {
   "enabled": true,
   "channel": "beta",
-  "config": {
-    "file": "specified_rules.xml",
-  },
+  "config": "rules.xml",
   "include_paths": [
     "Main.java"
   ]
 }
+
