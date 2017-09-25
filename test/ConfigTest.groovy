@@ -29,6 +29,6 @@ class ConfigTest {
   @Test
   public void acceptRulesSimpleNames() {
     def config = new Config([configFile: "/usr/src/app/fixtures/rules/config.json", codeFolder: "/usr/src/app/fixtures/rules"])
-    assertEquals config.ruleSet(), "java-basic,design"
+    assertEquals config.ruleSet(), "java-basic,java-design"
   }
 }
