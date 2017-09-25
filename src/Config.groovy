@@ -48,7 +48,7 @@ class Config {
   private def rulesOrFile(config) {
     validate(config)
     if(config.rules) {
-      return config.rules
+      return config.rules.join(",")
     }
     return specifiedRules(config.file)
   }

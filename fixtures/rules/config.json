@@ -2,7 +2,7 @@
   "enabled": true,
   "channel": "beta",
   "config": {
-    "rules": "java-basic,java-design"
+    "rules": ["java-basic", "java-design"]
   },
   "include_paths": [
     "Main.java"
