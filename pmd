@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+libs() {
+  find $GROOVY_HOME/lib -name "*.jar" | tr "\n" ":"
+}
+
+SRC_DIR=/usr/src/app/src
+
+java -cp $SRC_DIR:$(libs) groovy.ui.GroovyMain $SRC_DIR/main.groovy $@

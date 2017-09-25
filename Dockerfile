@@ -20,4 +20,4 @@ RUN chown -R app:app /usr/src/app
 
 USER app
 
-CMD ["/usr/src/app/pmd.groovy", "--codeFolder=/code", "--configFile=/config.json"]
+CMD ["/usr/src/app/pmd", "--codeFolder=/code", "--configFile=/config.json"]

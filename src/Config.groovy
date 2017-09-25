@@ -1,18 +1,16 @@
-#!/usr/bin/env groovy
-
 import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
 class Config {
+  static String DEFAULT_RULES = "/usr/src/app/ruleset.xml"
   def args
   def appContext
   def parsedConfig
   def filesToAnalyze
   def filesList
 
-  Config(args) {
-    this.args = args
-    this.appContext = setupContext()
+  Config(appContext) {
+    this.appContext = appContext
     this.parsedConfig = new JsonSlurper().parse(new File(appContext.configFile), "UTF-8")
     this.filesToAnalyze = filesToAnalyze()
     this.filesList = createTempFile()
@@ -27,23 +25,20 @@ class Config {
     if(parsedConfig.config) {
       def configFile = parsedConfig.config instanceof String ? parsedConfig.config : parsedConfig.config.file
 
-      if(fileExists(configFile)) {
-        return configFile
+      def specifiedRules = new File(appContext.codeFolder, configFile)
+      if(specifiedRules.exists()) {
+        return specifiedRules.absolutePath
       } else {
         System.err.println "Config file ${configFile} not found"
         System.exit(1)
       }
     }
 
-    "/usr/src/app/ruleset.xml"
+    return DEFAULT_RULES
   }
 
   def filesListPath() {
     filesList.absolutePath
-  }
-
-  private def fileExists(file) {
-    new File(file).exists()
   }
 
   private def filesToAnalyze() {
@@ -69,30 +64,4 @@ class Config {
     tmp.deleteOnExit()
     tmp
   }
-
-  private def setupContext() {
-    def cli = new CliBuilder(usage:"${this.class.name}")
-    cli._(longOpt: "configFile", required: true, args: 1, "Path to config.json file")
-    cli._(longOpt: "codeFolder", required: true, args: 1, "Path to code folder")
-    cli.parse(args)
-  }
 }
-
-def execute(command) {
-  ProcessBuilder builder = new ProcessBuilder(command.split(' '))
-  def env = builder.environment()
-  env.put("JAVA_OPTS", "-XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=30")
-  Process process = builder.start()
-  process.consumeProcessOutput(System.out, System.err)
-  process.waitFor()
-  System.exit(process.exitValue())
-}
-
-/* ********** MAIN ********** */
-
-def config = new Config(args)
-if (config.noFiles()) {
-  System.exit(0)
-}
-
-execute("/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false")
