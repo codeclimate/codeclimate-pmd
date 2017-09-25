@@ -22,13 +22,13 @@ class ConfigTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void doesNotAllowToMixRulesAndFile() {
-    def config = new Config([configFile: "/usr/src/app/fixtures/config.rules.mix.json", codeFolder: "/usr/src/app/fixtures"])
+    def config = new Config([configFile: "/usr/src/app/fixtures/rules/config.mix.json", codeFolder: "/usr/src/app/fixtures/rules"])
     config.ruleSet()
   }
 
   @Test
   public void acceptRulesSimpleNames() {
-    def config = new Config([configFile: "/usr/src/app/fixtures/config.rules.names.json", codeFolder: "/usr/src/app/fixtures"])
+    def config = new Config([configFile: "/usr/src/app/fixtures/rules/config.json", codeFolder: "/usr/src/app/fixtures/rules"])
     assertEquals config.ruleSet(), "java-basic,design"
   }
 }
