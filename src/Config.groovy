@@ -34,6 +34,11 @@ class Config {
       }
     }
 
+    def defaultFile = new File(appContext.codeFolder, "ruleset.xml")
+    if(defaultFile.exists()) {
+      return defaultFile.absolutePath
+    }
+
     return DEFAULT_RULES
   }
 
