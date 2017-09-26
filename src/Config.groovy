@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 import groovy.util.FileNameFinder
 
 class Config {
-  static String DEFAULT_RULES = "/usr/src/app/ruleset.xml"
+  static String DEFAULT_RULES = "java-basic"
   def args
   def appContext
   def parsedConfig
