@@ -5,6 +5,9 @@ engines:
   pmd:
     enabled: true
     channel: beta
+  codenarc:
+    enabled: true
+    channel: beta
 ratings:
   paths: []
 exclude_paths:
