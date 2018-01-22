@@ -4,7 +4,7 @@ set -euo pipefail
 LIB_DIR=/usr/src/app/lib
 
 download_pmd() {
-  URL="https://github.com/pmd/pmd/releases/download/pmd_releases/5.8.1/pmd-bin-5.8.1.zip"
+  URL="https://github.com/pmd/pmd/releases/download/pmd_releases/6.0.1/pmd-bin-6.0.1.zip"
   wget -O pmd.zip $URL
 }
 
