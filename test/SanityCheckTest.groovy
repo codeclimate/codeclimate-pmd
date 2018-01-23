@@ -4,15 +4,29 @@ import groovy.util.FileNameFinder
 import static org.junit.Assert.*
 import org.junit.*
 
+class CustomIO {
+  def byteStream
+  def printStream
+
+  CustomIO() {
+    byteStream = new ByteArrayOutputStream()
+    printStream = new PrintStream(byteStream)
+  }
+
+  public String toString() {
+    return byteStream.toString("UTF-8")
+  }
+}
+
 class SanityCheckTest {
   def execute(command) {
     def proc = command.execute()
-    def out = new StringBuffer()
-    def err = new StringBuffer()
+    def outIO = new CustomIO()
+    def errIO = new CustomIO()
 
-    proc.waitForProcessOutput(out, err)
+    proc.waitForProcessOutput(outIO.printStream, errIO.printStream)
 
-    return [proc, out, err]
+    return [proc, outIO, errIO]
   }
 
   @Test

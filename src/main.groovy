@@ -2,11 +2,12 @@ import groovy.util.*
 
 class Main {
   static def execute(command) {
+    OutputParser parser = new OutputParser(System.out, System.err)
     ProcessBuilder builder = new ProcessBuilder(command.split(' '))
     def env = builder.environment()
     env.put("JAVA_OPTS", "-XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=30")
     Process process = builder.start()
-    process.consumeProcessOutput(System.out, System.err)
+    process.consumeProcessOutput(parser.out, parser.err)
     process.waitFor()
     System.exit(process.exitValue())
   }
