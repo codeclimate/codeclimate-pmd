@@ -24,6 +24,6 @@ class Main {
       System.exit(0)
     }
 
-    execute("/usr/src/app/lib/pmd/bin/run.sh pmd -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false")
+    execute("/usr/src/app/lib/pmd/bin/run.sh pmd -cache /tmp/pmd-cache -filelist ${config.filesListPath()} -f codeclimate -R ${config.ruleSet()} -failOnViolation false")
   }
 }
