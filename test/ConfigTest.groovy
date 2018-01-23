@@ -5,7 +5,7 @@ class ConfigTest {
   @Test
   public void defaultRuleSet() {
     def config = new Config([configFile: "/usr/src/app/fixtures/default/config.json", codeFolder: "/usr/src/app/fixtures/default"])
-    assertEquals "java-basic", config.ruleSet()
+    assertEquals "/usr/src/app/java-basic-default-ruleset.xml", config.ruleSet()
   }
 
   @Test
