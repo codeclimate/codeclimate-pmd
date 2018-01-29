@@ -4,11 +4,9 @@ engines:
     enabled: true
   pmd:
     enabled: true
-    channel: beta
   codenarc:
     enabled: true
     channel: beta
-ratings:
-  paths: []
 exclude_paths:
   - "test/"
+  - "fixtures/"
