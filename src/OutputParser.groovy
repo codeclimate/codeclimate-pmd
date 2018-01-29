@@ -15,14 +15,18 @@ class OutputParser {
 
     public void print(String line) {
       if(isJson(line)) {
-        super.print(line)
+        super.print(sanitize(line))
       } else {
         this.err.print(line)
       }
     }
 
     boolean isJson(txt) {
-      return txt.startsWith("{");
+      return txt.trim().startsWith("{")
+    }
+
+    String sanitize(line) {
+      return line.replaceFirst('(?s)### \\[PMD properties\\][^"]*', '')
     }
   }
 }
