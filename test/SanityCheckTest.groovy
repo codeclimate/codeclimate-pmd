@@ -4,15 +4,29 @@ import groovy.util.FileNameFinder
 import static org.junit.Assert.*
 import org.junit.*
 
+class CustomIO {
+  def byteStream
+  def printStream
+
+  CustomIO() {
+    byteStream = new ByteArrayOutputStream()
+    printStream = new PrintStream(byteStream)
+  }
+
+  public String toString() {
+    return byteStream.toString("UTF-8")
+  }
+}
+
 class SanityCheckTest {
   def execute(command) {
     def proc = command.execute()
-    def out = new StringBuffer()
-    def err = new StringBuffer()
+    def outIO = new CustomIO()
+    def errIO = new CustomIO()
 
-    proc.waitForProcessOutput(out, err)
+    proc.waitForProcessOutput(outIO.printStream, errIO.printStream)
 
-    return [proc, out, err]
+    return [proc, outIO, errIO]
   }
 
   @Test
@@ -20,7 +34,6 @@ class SanityCheckTest {
     def (proc, out, err) = execute("/usr/src/app/pmd --codeFolder=/usr/src/app/fixtures/default --configFile=/usr/src/app/fixtures/default/config.json")
 
     assert !out.toString().isEmpty()
-    assert err.toString().isEmpty()
     assert proc.exitValue() == 0
   }
 
@@ -29,9 +42,12 @@ class SanityCheckTest {
     def (proc, out, _err) = execute("/usr/src/app/pmd --codeFolder=/usr/src/app/fixtures/specified_file --configFile=/usr/src/app/fixtures/specified_file/config.new.json")
     def (procOld, outOld, _errOld) = execute("/usr/src/app/pmd --codeFolder=/usr/src/app/fixtures/specified_file --configFile=/usr/src/app/fixtures/specified_file/config.old.json")
 
-    assert proc.exitValue() == procOld.exitValue()
-    assert out.toString().equals(outOld.toString())
+    def expectedIssue = "Avoid modifying an outer loop incrementer in an inner loop for update expression"
+
     assert proc.exitValue() == 0
+    assert proc.exitValue() == procOld.exitValue()
+    assert out.toString().contains(expectedIssue)
+    assert outOld.toString().contains(expectedIssue)
   }
 
   @Test
