@@ -5,7 +5,7 @@ MAINTAINER "Code Climate <hello@codeclimate.com>"
 USER root
 
 RUN apk update && \
-    apk add ca-certificates wget curl jq && \
+    apk add ca-certificates wget curl jq bash && \
     update-ca-certificates
 
 RUN adduser -u 9000 -D app
