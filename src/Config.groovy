@@ -78,7 +78,7 @@ class Config {
     def i = files.iterator()
     while(i.hasNext()) {
       def name = i.next()
-      if(!name.endsWith(".java")) {
+      if(!name.endsWith(".java") && !name.endsWith(".cls")) {
         i.remove()
       }
     }
