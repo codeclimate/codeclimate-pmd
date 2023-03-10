@@ -20,5 +20,5 @@ upgrade:
 		$(IMAGE_NAME) ./bin/upgrade.sh
 
 release:
-	docker tag $(IMAGE_NAME) $(RELEASE_REGISTRY)/codeclimate-phpmd:$(RELEASE_TAG)
-	docker push $(RELEASE_REGISTRY)/codeclimate-phpmd:$(RELEASE_TAG)
+	docker tag $(IMAGE_NAME) $(RELEASE_REGISTRY)/codeclimate-pmd:$(RELEASE_TAG)
+	docker push $(RELEASE_REGISTRY)/codeclimate-pmd:$(RELEASE_TAG)
